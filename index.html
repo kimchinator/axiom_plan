@@ -1,0 +1,1771 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AXIOM PLAN — Private Health Concierge | Seoul, Korea</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@200;300;400;500&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --gold: #B8965A;
+            --gold-light: #D4AF78;
+            --gold-pale: #EFE3C8;
+            --black: #080807;
+            --dark: #0F0E0C;
+            --dark2: #161410;
+            --dark3: #1E1B16;
+            --white: #F4F1EC;
+            --muted: #7A766E;
+            --muted2: #5A5650;
+            --border: rgba(184, 150, 90, 0.18);
+            --border2: rgba(255, 255, 255, 0.06);
+        }
+
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background: var(--black);
+            color: var(--white);
+            font-family: 'Jost', sans-serif;
+            font-weight: 300;
+            font-size: 14px;
+            letter-spacing: 0.03em;
+            cursor: none;
+            overflow-x: hidden;
+        }
+
+        /* Cursor */
+        #cur {
+            position: fixed;
+            width: 7px;
+            height: 7px;
+            background: var(--gold);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            transform: translate(-50%, -50%);
+            transition: transform .15s ease;
+            top: 0;
+            left: 0;
+        }
+
+        #cur-ring {
+            position: fixed;
+            width: 30px;
+            height: 30px;
+            border: 1px solid rgba(184, 150, 90, .45);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            transition: border-color .3s;
+            top: 0;
+            left: 0;
+        }
+
+        /* Grain */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 900;
+            opacity: .4;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+        }
+
+        /* Utility */
+        .serif {
+            font-family: 'Cormorant Garamond', serif;
+        }
+
+        .gold {
+            color: var(--gold);
+        }
+
+        .tag {
+            display: inline-block;
+            font-size: 9px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border: 1px solid var(--border);
+            padding: 5px 14px;
+            margin-bottom: 24px;
+        }
+
+        /* Reveal */
+        .js-loaded .reveal {
+            opacity: 0;
+            transform: translateY(28px);
+            transition: opacity .9s cubic-bezier(.16, 1, .3, 1), transform .9s cubic-bezier(.16, 1, .3, 1);
+        }
+
+        .js-loaded .reveal.visible {
+            opacity: 1;
+            transform: none;
+        }
+
+        .js-loaded .reveal-delay-1 {
+            transition-delay: .1s;
+        }
+
+        .js-loaded .reveal-delay-2 {
+            transition-delay: .2s;
+        }
+
+        .js-loaded .reveal-delay-3 {
+            transition-delay: .3s;
+        }
+
+        .js-loaded .reveal-delay-4 {
+            transition-delay: .4s;
+        }
+
+        /* ── LEGAL BANNER ── */
+        .legal-banner {
+            background: var(--dark2);
+            border-bottom: 1px solid var(--border);
+            padding: 8px 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .legal-banner span {
+            font-size: 9.5px;
+            letter-spacing: .1em;
+            color: var(--muted);
+            text-align: center;
+        }
+
+        .legal-banner b {
+            color: var(--gold);
+            font-weight: 400;
+        }
+
+        /* ── NAV ── */
+        nav {
+            position: fixed;
+            top: 36px;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            padding: 0 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all .5s ease;
+        }
+
+        nav.scrolled {
+            top: 0;
+            background: rgba(8, 8, 7, .92);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border);
+            padding-top: 16px;
+            padding-bottom: 16px;
+        }
+
+        .nav-logo {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--white);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-logo-diamond {
+            width: 18px;
+            height: 18px;
+            background: var(--gold);
+            transform: rotate(45deg);
+            flex-shrink: 0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 36px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-size: 10.5px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color .3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--white);
+        }
+
+        .nav-cta {
+            font-size: 10px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--black);
+            background: var(--gold);
+            padding: 10px 24px;
+            text-decoration: none;
+            transition: background .3s;
+        }
+
+        .nav-cta:hover {
+            background: var(--gold-light);
+        }
+
+        /* ── HERO ── */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 140px 60px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 70% at 70% 50%, rgba(184, 150, 90, .06) 0%, transparent 60%),
+                radial-gradient(ellipse 40% 40% at 20% 80%, rgba(184, 150, 90, .04) 0%, transparent 50%);
+        }
+
+        .hero-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 55%;
+            width: 1px;
+            background: linear-gradient(to bottom, transparent, var(--border) 30%, var(--border) 70%, transparent);
+            opacity: .5;
+        }
+
+        .hero-content {
+            position: relative;
+            max-width: 600px;
+        }
+
+        .hero-eyebrow {
+            font-size: 9px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .hero-eyebrow::before {
+            content: '';
+            display: block;
+            width: 40px;
+            height: 1px;
+            background: var(--gold);
+        }
+
+        .hero-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(52px, 7vw, 88px);
+            font-weight: 300;
+            line-height: 1.0;
+            letter-spacing: -.01em;
+            margin-bottom: 32px;
+        }
+
+        .hero-title em {
+            font-style: italic;
+            color: var(--gold);
+        }
+
+        .hero-sub {
+            font-size: 13px;
+            line-height: 1.9;
+            color: var(--muted);
+            max-width: 440px;
+            margin-bottom: 48px;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        .btn-primary {
+            font-size: 10px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--black);
+            background: var(--gold);
+            padding: 14px 32px;
+            text-decoration: none;
+            transition: background .3s;
+        }
+
+        .btn-primary:hover {
+            background: var(--gold-light);
+        }
+
+        .btn-ghost {
+            font-size: 10px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            color: var(--muted);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color .3s;
+        }
+
+        .btn-ghost:hover {
+            color: var(--white);
+        }
+
+        .btn-ghost::after {
+            content: '→';
+            font-size: 14px;
+            transition: transform .3s;
+        }
+
+        .btn-ghost:hover::after {
+            transform: translateX(4px);
+        }
+
+        .hero-stats {
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+        }
+
+        .stat-item {
+            text-align: right;
+        }
+
+        .stat-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 42px;
+            font-weight: 300;
+            color: var(--gold);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 9px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .stat-line {
+            width: 1px;
+            height: 48px;
+            background: var(--border);
+            margin-left: auto;
+            margin-top: 16px;
+        }
+
+        /* ── MARQUEE ── */
+        .marquee-wrap {
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            padding: 16px 0;
+            overflow: hidden;
+            background: var(--dark);
+        }
+
+        .marquee-track {
+            display: flex;
+            gap: 0;
+            animation: marquee 28s linear infinite;
+            white-space: nowrap;
+        }
+
+        .marquee-item {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            padding: 0 32px;
+            font-size: 9.5px;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .marquee-diamond {
+            width: 5px;
+            height: 5px;
+            background: var(--gold);
+            transform: rotate(45deg);
+            flex-shrink: 0;
+        }
+
+        @keyframes marquee {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* ── ABOUT ── */
+        .section {
+            padding: 120px 60px;
+        }
+
+        .section-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .about-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 100px;
+            align-items: center;
+        }
+
+        .section-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 72px;
+            font-weight: 300;
+            color: rgba(184, 150, 90, .12);
+            line-height: 1;
+            margin-bottom: -20px;
+        }
+
+        .section-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(36px, 4vw, 52px);
+            font-weight: 300;
+            line-height: 1.15;
+            margin-bottom: 28px;
+        }
+
+        .section-body {
+            font-size: 13px;
+            line-height: 1.95;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .about-pillars {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+        }
+
+        .pillar {
+            background: var(--dark);
+            padding: 32px 28px;
+            transition: background .3s;
+        }
+
+        .pillar:hover {
+            background: var(--dark2);
+        }
+
+        .pillar-icon {
+            width: 32px;
+            height: 32px;
+            margin-bottom: 16px;
+            color: var(--gold);
+        }
+
+        .pillar-title {
+            font-size: 11px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--white);
+            margin-bottom: 10px;
+        }
+
+        .pillar-text {
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--muted);
+        }
+
+        /* ── SERVICES ── */
+        .services-section {
+            background: var(--dark);
+        }
+
+        .services-header {
+            text-align: center;
+            margin-bottom: 72px;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+        }
+
+        .service-card {
+            background: var(--dark2);
+            padding: 48px 40px;
+            transition: background .4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--gold), transparent);
+            transform: scaleX(0);
+            transition: transform .4s;
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-card:hover {
+            background: var(--dark3);
+        }
+
+        .service-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 13px;
+            color: var(--gold);
+            margin-bottom: 24px;
+            letter-spacing: .1em;
+        }
+
+        .service-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 24px;
+            font-weight: 400;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .service-body {
+            font-size: 12px;
+            line-height: 1.85;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .service-note {
+            font-size: 9.5px;
+            letter-spacing: .1em;
+            color: var(--muted2);
+            font-style: italic;
+        }
+
+        /* ── PROCESS ── */
+        /* process-section styles intentionally omitted */
+        .process-steps {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 0;
+            margin-top: 72px;
+            position: relative;
+        }
+
+        .process-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 10%;
+            right: 10%;
+            height: 1px;
+            background: linear-gradient(to right, var(--border), var(--gold-light), var(--border));
+            opacity: .4;
+        }
+
+        .step {
+            padding: 0 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .step-dot {
+            width: 40px;
+            height: 40px;
+            border: 1px solid var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            background: var(--black);
+            position: relative;
+            z-index: 1;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 15px;
+            color: var(--gold);
+        }
+
+        .step-title {
+            font-size: 10.5px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+
+        .step-text {
+            font-size: 11.5px;
+            line-height: 1.8;
+            color: var(--muted);
+        }
+
+        /* ── PACKAGES ── */
+        .packages-section {
+            background: var(--dark);
+        }
+
+        .packages-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 72px;
+        }
+
+        .package-card {
+            border: 1px solid var(--border);
+            background: var(--dark2);
+            padding: 48px 40px;
+            transition: border-color .3s;
+            position: relative;
+        }
+
+        .package-card.featured {
+            border-color: var(--gold);
+            background: var(--dark3);
+        }
+
+        .package-card.featured::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gold);
+            color: var(--black);
+            font-size: 8.5px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            padding: 5px 16px;
+        }
+
+        .package-tier {
+            font-size: 9px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+
+        .package-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 30px;
+            font-weight: 300;
+            margin-bottom: 8px;
+        }
+
+        .package-tagline {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 32px;
+            line-height: 1.6;
+        }
+
+        .package-price {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 44px;
+            font-weight: 300;
+            color: var(--gold);
+            line-height: 1;
+            margin-bottom: 4px;
+        }
+
+        .package-price-note {
+            font-size: 10px;
+            color: var(--muted2);
+            margin-bottom: 32px;
+        }
+
+        .package-divider {
+            height: 1px;
+            background: var(--border);
+            margin-bottom: 28px;
+        }
+
+        .package-features {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 36px;
+        }
+
+        .package-features li {
+            font-size: 12px;
+            color: var(--muted);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            line-height: 1.5;
+        }
+
+        .package-features li::before {
+            content: '◇';
+            color: var(--gold);
+            font-size: 8px;
+            margin-top: 3px;
+            flex-shrink: 0;
+        }
+
+        .package-btn {
+            display: block;
+            text-align: center;
+            font-size: 10px;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            text-decoration: none;
+            padding: 13px 24px;
+            transition: all .3s;
+        }
+
+        .package-btn-outline {
+            border: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        .package-btn-outline:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .package-btn-gold {
+            background: var(--gold);
+            color: var(--black);
+        }
+
+        .package-btn-gold:hover {
+            background: var(--gold-light);
+        }
+
+        /* ── TESTIMONIALS ── */
+        /* testimonials-section styles intentionally omitted */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1px;
+            background: var(--border);
+            border: 1px solid var(--border);
+            margin-top: 72px;
+        }
+
+        .testimonial-card {
+            background: var(--dark);
+            padding: 48px 40px;
+        }
+
+        .testimonial-quote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 64px;
+            color: var(--gold);
+            line-height: .8;
+            margin-bottom: 16px;
+            opacity: .4;
+        }
+
+        .testimonial-text {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 18px;
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.7;
+            color: var(--white);
+            margin-bottom: 28px;
+        }
+
+        .testimonial-author {
+            font-size: 10.5px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--muted);
+        }
+
+        .testimonial-disclaimer {
+            font-size: 9px;
+            color: var(--muted2);
+            margin-top: 6px;
+            font-style: italic;
+        }
+
+        /* ── CTA ── */
+        .cta-section {
+            background: var(--dark2);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .cta-title {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: clamp(40px, 5vw, 64px);
+            font-weight: 300;
+            line-height: 1.15;
+            margin-bottom: 24px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-sub {
+            font-size: 13px;
+            color: var(--muted);
+            max-width: 480px;
+            margin: 0 auto 48px;
+            line-height: 1.9;
+        }
+
+        .cta-disclaimer {
+            font-size: 10px;
+            color: var(--muted2);
+            max-width: 500px;
+            margin: 32px auto 0;
+            line-height: 1.7;
+            font-style: italic;
+        }
+
+        /* ── FOOTER ── */
+        footer {
+            background: var(--black);
+            border-top: 1px solid var(--border);
+            padding: 80px 60px 40px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1.5fr;
+            gap: 60px;
+            margin-bottom: 60px;
+        }
+
+        .footer-brand-name {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 22px;
+            font-weight: 600;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-brand-diamond {
+            width: 14px;
+            height: 14px;
+            background: var(--gold);
+            transform: rotate(45deg);
+            flex-shrink: 0;
+        }
+
+        .footer-brand-text {
+            font-size: 12px;
+            line-height: 1.85;
+            color: var(--muted);
+            max-width: 280px;
+        }
+
+        .footer-col-title {
+            font-size: 9px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 20px;
+        }
+
+        .footer-col-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .footer-col-links a {
+            font-size: 12px;
+            color: var(--muted);
+            text-decoration: none;
+            transition: color .3s;
+        }
+
+        .footer-col-links a:hover {
+            color: var(--white);
+        }
+
+        .footer-contact-item {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            margin-bottom: 16px;
+        }
+
+        .footer-contact-label {
+            font-size: 9px;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--muted2);
+        }
+
+        .footer-contact-val {
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .footer-legal {
+            border-top: 1px solid var(--border);
+            padding-top: 32px;
+            margin-bottom: 24px;
+        }
+
+        .footer-legal p {
+            font-size: 10px;
+            line-height: 1.8;
+            color: var(--muted2);
+            margin-bottom: 12px;
+        }
+
+        .footer-bottom {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 24px;
+            border-top: 1px solid var(--border2);
+        }
+
+        .footer-copy {
+            font-size: 10px;
+            color: var(--muted2);
+        }
+
+        .footer-bottom-links {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-bottom-links a {
+            font-size: 10px;
+            color: var(--muted2);
+            text-decoration: none;
+            transition: color .3s;
+        }
+
+        .footer-bottom-links a:hover {
+            color: var(--muted);
+        }
+
+        /* ── BESPOKE PHILOSOPHY ── */
+        .bespoke-philosophy {
+            border: 1px solid var(--border);
+            background: var(--dark2);
+            margin-bottom: 72px;
+        }
+
+        .bespoke-philosophy-inner {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        .bespoke-left {
+            padding: 56px 52px;
+            border-right: 1px solid var(--border);
+        }
+
+        .bespoke-lead {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 26px;
+            font-weight: 300;
+            font-style: italic;
+            line-height: 1.45;
+            color: var(--white);
+            margin-bottom: 28px;
+        }
+
+        .bespoke-body {
+            font-size: 12.5px;
+            line-height: 1.95;
+            color: var(--muted);
+            margin-bottom: 16px;
+        }
+
+        .bespoke-right {
+            padding: 56px 52px;
+        }
+
+        .bespoke-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+        }
+
+        .bespoke-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+        }
+
+        .bespoke-step-num {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 13px;
+            color: var(--gold);
+            letter-spacing: .1em;
+            margin-top: 2px;
+            flex-shrink: 0;
+            width: 24px;
+        }
+
+        .bespoke-step-title {
+            font-size: 11px;
+            letter-spacing: .13em;
+            text-transform: uppercase;
+            color: var(--white);
+            margin-bottom: 8px;
+        }
+
+        .bespoke-step-text {
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--muted);
+        }
+
+        .bespoke-connector {
+            width: 1px;
+            height: 36px;
+            background: var(--border);
+            margin: 12px 0 12px 11px;
+        }
+
+        /* Tier label */
+        .tier-label {
+            font-size: 9px;
+            letter-spacing: .2em;
+            text-transform: uppercase;
+            color: var(--muted2);
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        /* Updated package card elements */
+        .package-tier-badge {
+            font-size: 8.5px;
+            letter-spacing: .22em;
+            text-transform: uppercase;
+            color: var(--muted2);
+            border: 1px solid var(--border);
+            display: inline-block;
+            padding: 4px 12px;
+            margin-bottom: 16px;
+        }
+
+        .package-featured-label {
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gold);
+            color: var(--black);
+            font-size: 8.5px;
+            letter-spacing: .16em;
+            text-transform: uppercase;
+            padding: 5px 16px;
+            white-space: nowrap;
+        }
+
+        .package-inquiry-note {
+            font-size: 10px;
+            color: var(--muted2);
+            font-style: italic;
+            margin-bottom: 20px;
+            letter-spacing: .04em;
+        }
+
+        .packages-footnote {
+            font-size: 10px;
+            color: var(--muted2);
+            line-height: 1.8;
+            text-align: center;
+            max-width: 680px;
+            margin: 40px auto 0;
+            font-style: italic;
+            border-top: 1px solid var(--border);
+            padding-top: 32px;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 900px) {
+            nav {
+                padding: 0 24px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 120px 24px 80px;
+            }
+
+            .hero-stats {
+                display: none;
+            }
+
+            .hero-line {
+                display: none;
+            }
+
+            .section {
+                padding: 80px 24px;
+            }
+
+            .bespoke-philosophy-inner {
+                grid-template-columns: 1fr;
+            }
+
+            .bespoke-left {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 36px 28px;
+            }
+
+            .bespoke-right {
+                padding: 36px 28px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .process-steps {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .packages-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 32px;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .legal-banner {
+                padding: 8px 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="cur"></div>
+    <div id="cur-ring"></div>
+
+    <!-- LEGAL BANNER -->
+    <div class="legal-banner">
+        <span><b>NOTICE:</b> AXIOM PLAN is a travel coordination service, not a licensed medical provider. We facilitate
+            access to independent Korean medical professionals. Nothing on this site constitutes medical advice.</span>
+    </div>
+
+    <!-- NAV -->
+    <nav id="nav">
+        <a href="#" class="nav-logo">
+            <div class="nav-logo-diamond"></div>
+            Axiom Plan
+        </a>
+        <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#services">Services</a></li>
+            <li><a href="#process">Process</a></li>
+            <li><a href="#packages">Packages</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+        <a href="#contact" class="nav-cta">Private Consultation</a>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-line"></div>
+        <div class="hero-content">
+            <div class="hero-eyebrow reveal">Seoul · Private Health Concierge</div>
+            <h1 class="hero-title reveal reveal-delay-1">
+                Your Health.<br>
+                <em>Elevated.</em><br>
+                In Korea.
+            </h1>
+            <p class="hero-sub reveal reveal-delay-2">
+                Exclusive access to Seoul's most distinguished medical institutions — curated, coordinated, and
+                accompanied for discerning Americans who refuse to compromise on their wellbeing.
+            </p>
+            <div class="hero-actions reveal reveal-delay-3">
+                <a href="#contact" class="btn-primary">Request Consultation</a>
+                <a href="#services" class="btn-ghost">Explore Services</a>
+            </div>
+        </div>
+        <div class="hero-stats reveal reveal-delay-2">
+            <div class="stat-item">
+                <div class="stat-num">60%</div>
+                <div class="stat-label">Avg. Cost Savings*</div>
+            </div>
+            <div class="stat-line"></div>
+            <div class="stat-item">
+                <div class="stat-num">100%</div>
+                <div class="stat-label">White Glove Service</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- MARQUEE -->
+    <div class="marquee-wrap">
+        <div class="marquee-track">
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Executive Health Screening
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Longevity Medicine
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>NAD+ Wellness Programs
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Precision Diagnostics
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Anti-Aging Protocols
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Private Medical Escort
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Bilingual Concierge
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Seoul's Finest Clinics
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Executive Health Screening
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Longevity Medicine
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>NAD+ Wellness Programs
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Precision Diagnostics
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Anti-Aging Protocols
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Private Medical Escort
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Bilingual Concierge
+            </div>
+            <div class="marquee-item">
+                <div class="marquee-diamond"></div>Seoul's Finest Clinics
+            </div>
+        </div>
+    </div>
+
+    <!-- ABOUT -->
+    <section class="section" id="about">
+        <div class="section-inner">
+            <div class="about-grid">
+                <div>
+                    <div class="section-num reveal">01</div>
+                    <span class="tag reveal">Our Philosophy</span>
+                    <h2 class="section-title reveal">Where Medical Excellence<br>Meets <em class="serif"
+                            style="font-style:italic">Private Luxury</em></h2>
+                    <p class="section-body reveal reveal-delay-1">
+                        Korea leads the world in medical infrastructure, diagnostic precision, and emerging wellness
+                        protocols. Yet for most Americans, accessing this excellence is a logistical challenge —
+                        language barriers, unfamiliar systems, and zero personal guidance.
+                    </p>
+                    <p class="section-body reveal reveal-delay-2">
+                        AXIOM PLAN exists for those who will not accept that friction. We are a private concierge
+                        service — not a medical provider — dedicated to connecting discerning clients with Seoul's most
+                        distinguished physicians and facilitating a seamlessly elevated experience from arrival to
+                        departure.
+                    </p>
+                </div>
+                <div class="about-pillars reveal reveal-delay-1">
+                    <div class="pillar">
+                        <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        <div class="pillar-title">Vetted Access</div>
+                        <p class="pillar-text">Relationships with Seoul's top-tier institutions — curated over years,
+                            not directories.</p>
+                    </div>
+                    <div class="pillar">
+                        <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.2">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 8v4l3 3" />
+                        </svg>
+                        <div class="pillar-title">Full Coordination</div>
+                        <p class="pillar-text">Every appointment, transfer, and detail arranged before you board your
+                            flight.</p>
+                    </div>
+                    <div class="pillar">
+                        <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.2">
+                            <path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" />
+                        </svg>
+                        <div class="pillar-title">Bilingual Expertise</div>
+                        <p class="pillar-text">Native-level Korean and English — no information lost, no moment of
+                            uncertainty.</p>
+                    </div>
+                    <div class="pillar">
+                        <svg class="pillar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1.2">
+                            <path d="M20 7H4a2 2 0 00-2 2v6a2 2 0 002 2h16a2 2 0 002-2V9a2 2 0 00-2-2z" />
+                            <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
+                        </svg>
+                        <div class="pillar-title">Fee-Only Model</div>
+                        <p class="pillar-text">We earn from you — never from referral commissions. Your interests,
+                            undivided.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SERVICES -->
+    <section class="section services-section" id="services">
+        <div class="section-inner">
+            <div class="services-header">
+                <div class="section-num reveal">02</div>
+                <span class="tag reveal">Signature Programs</span>
+                <h2 class="section-title reveal">A Portfolio of Curated<br><em class="serif"
+                        style="font-style:italic">Health Experiences</em></h2>
+            </div>
+            <div class="services-grid">
+                <div class="service-card reveal">
+                    <div class="service-num">01</div>
+                    <h3 class="service-title">Executive Health Screening</h3>
+                    <p class="service-body">Comprehensive full-body diagnostics at Seoul's premier hospitals — covering
+                        cardiovascular, oncological, metabolic, and neurological assessments in a single, coordinated
+                        visit. Includes bilingual medical escort and physician consultation with translated summary
+                        report.</p>
+                    <p class="service-note">Medical services performed by independent licensed Korean physicians.
+                        Results for informational purposes.</p>
+                </div>
+                <div class="service-card reveal reveal-delay-1">
+                    <div class="service-num">02</div>
+                    <h3 class="service-title">Longevity & Wellness Access</h3>
+                    <p class="service-body">Facilitated access to Seoul's leading longevity clinics offering NAD+
+                        infusion programs, biomarker assessments, personalized wellness consultations, and biological
+                        age evaluation by specialists. We coordinate; Korean physicians advise.</p>
+                    <p class="service-note">Wellness programs are not intended to diagnose, treat, or cure any
+                        condition. Individual results vary.</p>
+                </div>
+                <div class="service-card reveal reveal-delay-2">
+                    <div class="service-num">03</div>
+                    <h3 class="service-title">Aesthetic & Regenerative</h3>
+                    <p class="service-body">Curated access to Seoul's internationally recognized aesthetic medicine
+                        practitioners — consultations for skin rejuvenation, non-surgical facial programs, and
+                        regenerative skin treatments, with full pre- and post-consultation coordination.</p>
+                    <p class="service-note">All procedures performed by licensed Korean specialists. Outcomes vary by
+                        individual.</p>
+                </div>
+                <div class="service-card reveal">
+                    <div class="service-num">04</div>
+                    <h3 class="service-title">Hormonal Wellness Consultation</h3>
+                    <p class="service-body">Facilitated access to board-certified Korean endocrinologists offering
+                        comprehensive hormonal panels and bioidentical hormone consultations. Full medical record
+                        coordination and bilingual interpretation throughout.</p>
+                    <p class="service-note">Medical advice provided exclusively by attending Korean physicians. Not
+                        available as telemedicine.</p>
+                </div>
+                <div class="service-card reveal reveal-delay-1">
+                    <div class="service-num">05</div>
+                    <h3 class="service-title">Precision Oncology Screening</h3>
+                    <p class="service-body">Coordination with Korea's leading cancer screening centers for advanced
+                        liquid biopsy, PET/CT, and genetic risk assessments — including full record translation,
+                        physician liaison, and report summary in English.</p>
+                    <p class="service-note">Screening does not guarantee cancer detection or prevention. Consult your US
+                        physician with results.</p>
+                </div>
+                <div class="service-card reveal reveal-delay-2">
+                    <div class="service-num">06</div>
+                    <h3 class="service-title">Bespoke Concierge Journey</h3>
+                    <p class="service-body">For clients with specific health goals requiring multi-specialty
+                        coordination. A fully custom program designed around your health priorities — from specialist
+                        selection through luxury accommodation, private car, and follow-up facilitation.</p>
+                    <p class="service-note">Custom programs require preliminary intake consultation. Inquire for
+                        availability.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PROCESS -->
+    <section class="section" id="process">
+        <div class="section-inner">
+            <div class="services-header">
+                <div class="section-num reveal">03</div>
+                <span class="tag reveal">How It Works</span>
+                <h2 class="section-title reveal">Your Journey,<br><em class="serif" style="font-style:italic">Precisely
+                        Arranged</em></h2>
+            </div>
+            <div class="process-steps">
+                <div class="step reveal">
+                    <div class="step-dot">I</div>
+                    <div class="step-title">Private Intake</div>
+                    <p class="step-text">Confidential consultation to understand your health goals, medical history, and
+                        desired outcomes.</p>
+                </div>
+                <div class="step reveal reveal-delay-1">
+                    <div class="step-dot">II</div>
+                    <div class="step-title">Program Design</div>
+                    <p class="step-text">We curate the optimal combination of Korean institutions and specialists for
+                        your objectives.</p>
+                </div>
+                <div class="step reveal reveal-delay-2">
+                    <div class="step-dot">III</div>
+                    <div class="step-title">Full Coordination</div>
+                    <p class="step-text">Every appointment, transfer, luxury accommodation, and logistical detail
+                        arranged seamlessly.</p>
+                </div>
+                <div class="step reveal reveal-delay-3">
+                    <div class="step-dot">IV</div>
+                    <div class="step-title">In-Seoul Escort</div>
+                    <p class="step-text">Bilingual medical concierge accompanies you throughout, ensuring clarity at
+                        every physician interaction.</p>
+                </div>
+                <div class="step reveal reveal-delay-4">
+                    <div class="step-dot">V</div>
+                    <div class="step-title">Post-Journey Support</div>
+                    <p class="step-text">Translated reports, physician liaison, and follow-up coordination with your US
+                        healthcare team.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PACKAGES -->
+    <section class="section packages-section" id="packages">
+        <div class="section-inner">
+
+            <!-- Header -->
+            <div class="services-header">
+                <div class="section-num reveal">04</div>
+                <span class="tag reveal">Your Plan</span>
+                <h2 class="section-title reveal">Built Around You,<br><em class="serif" style="font-style:italic">Not a
+                        Brochure</em></h2>
+            </div>
+
+            <!-- Bespoke philosophy block -->
+            <div class="bespoke-philosophy reveal">
+                <div class="bespoke-philosophy-inner">
+                    <div class="bespoke-left">
+                        <p class="bespoke-lead">No two clients share the same health goals.<br>Your program shouldn't be
+                            off the shelf.</p>
+                        <p class="bespoke-body">At AXIOM PLAN, pricing is never predetermined. You begin by selecting
+                            the services that matter most to you — diagnostics, longevity access, aesthetic medicine,
+                            specialist consultations, or a combination — and we build a fully personalized itinerary
+                            around that vision. Your concierge investment is then scoped precisely to the depth of
+                            coordination, duration, and service level your program requires.</p>
+                        <p class="bespoke-body">This model ensures you pay for exactly what you need — and receive
+                            exactly what you deserve.</p>
+                    </div>
+                    <div class="bespoke-right">
+                        <div class="bespoke-steps">
+                            <div class="bespoke-step">
+                                <div class="bespoke-step-num">01</div>
+                                <div>
+                                    <div class="bespoke-step-title">Select Your Services</div>
+                                    <div class="bespoke-step-text">Choose from our portfolio — screening, longevity,
+                                        aesthetics, hormonal, oncology, or multi-specialty.</div>
+                                </div>
+                            </div>
+                            <div class="bespoke-connector"></div>
+                            <div class="bespoke-step">
+                                <div class="bespoke-step-num">02</div>
+                                <div>
+                                    <div class="bespoke-step-title">We Design Your Plan</div>
+                                    <div class="bespoke-step-text">Your intake shapes a tailored itinerary —
+                                        specialists, schedule, accommodation, and escort scope.</div>
+                                </div>
+                            </div>
+                            <div class="bespoke-connector"></div>
+                            <div class="bespoke-step">
+                                <div class="bespoke-step-num">03</div>
+                                <div>
+                                    <div class="bespoke-step-title">Transparent Pricing</div>
+                                    <div class="bespoke-step-text">A clear, itemized concierge fee based solely on your
+                                        program — no commissions, no hidden costs.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tier cards -->
+            <div class="tier-label reveal">Choose Your Level of Service</div>
+            <div class="packages-grid">
+
+                <div class="package-card reveal">
+                    <div class="package-tier-badge">Curated</div>
+                    <div class="package-name">Meridian</div>
+                    <p class="package-tagline">A focused, expertly guided entry into Korea's medical excellence — for
+                        the client with clear, defined goals.</p>
+                    <div class="package-divider"></div>
+                    <ul class="package-features">
+                        <li>Single-specialty or screening-focused coordination</li>
+                        <li>Bilingual medical escort (up to 2 days)</li>
+                        <li>Airport arrival & clinic transfers</li>
+                        <li>Pre-trip intake & goal consultation</li>
+                        <li>English report translation & summary</li>
+                        <li>US physician handoff guidance</li>
+                    </ul>
+                    <div class="package-inquiry-note">Pricing scoped after consultation</div>
+                    <a href="#contact" class="package-btn package-btn-outline">Begin Inquiry</a>
+                </div>
+
+                <div class="package-card featured reveal reveal-delay-1">
+                    <div class="package-featured-label">Most Requested</div>
+                    <div class="package-tier-badge">Signature</div>
+                    <div class="package-name">Luminary</div>
+                    <p class="package-tagline">A multi-day curated journey spanning diagnostics, longevity, and
+                        aesthetic access — the AXIOM experience in full.</p>
+                    <div class="package-divider"></div>
+                    <ul class="package-features">
+                        <li>Multi-service coordination across specialties</li>
+                        <li>Full concierge escort (up to 4 days)</li>
+                        <li>Longevity & wellness clinic access</li>
+                        <li>Aesthetic medicine consultation</li>
+                        <li>Luxury hotel curation & private car</li>
+                        <li>Priority physician scheduling</li>
+                        <li>Comprehensive translated report package</li>
+                    </ul>
+                    <div class="package-inquiry-note">Pricing scoped after consultation</div>
+                    <a href="#contact" class="package-btn package-btn-gold">Begin Your Journey</a>
+                </div>
+
+                <div class="package-card reveal reveal-delay-2">
+                    <div class="package-tier-badge">Atelier</div>
+                    <div class="package-name">Sovereign</div>
+                    <p class="package-tagline">An entirely bespoke program — no limits, no templates. Designed for those
+                        who require the exceptional.</p>
+                    <div class="package-divider"></div>
+                    <ul class="package-features">
+                        <li>Fully custom multi-specialty itinerary</li>
+                        <li>Dedicated personal concierge throughout</li>
+                        <li>Companion & spouse coordination</li>
+                        <li>Ultra-luxury accommodation arrangement</li>
+                        <li>Extended or multi-visit program available</li>
+                        <li>Ongoing Seoul physician liaison</li>
+                        <li>Annual membership option</li>
+                    </ul>
+                    <div class="package-inquiry-note">Pricing scoped after consultation</div>
+                    <a href="#contact" class="package-btn package-btn-outline">Private Inquiry</a>
+                </div>
+
+            </div>
+            <p class="packages-footnote reveal">All concierge fees are scoped individually following your private intake
+                consultation. Medical costs are separate and paid directly to Korean providers. AXIOM PLAN does not
+                accept referral fees or commissions from medical institutions.</p>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section cta-section" id="contact">
+        <div class="section-inner" style="text-align:center;">
+            <span class="tag reveal">Begin Your Journey</span>
+            <h2 class="cta-title reveal">Your Private Health<br>Consultation Awaits</h2>
+            <p class="cta-sub reveal reveal-delay-1">Reserve a complimentary 30-minute private consultation to discuss
+                your health goals and explore how AXIOM PLAN can design your ideal Seoul experience.</p>
+            <a href="/cdn-cgi/l/email-protection#1f667e717e7c77705f7e67767072326f737e71317c7072"
+                class="btn-primary reveal reveal-delay-2">Request Private Consultation</a>
+            <p class="cta-disclaimer reveal reveal-delay-3">AXIOM PLAN is a travel coordination and concierge service.
+                We do not provide medical advice. All medical services are performed by independent, licensed Korean
+                medical professionals operating under the Republic of Korea Ministry of Health and Welfare.
+                Consultations are for travel coordination purposes only.</p>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div>
+                <div class="footer-brand-name">
+                    <div class="footer-brand-diamond"></div>
+                    Axiom Plan
+                </div>
+                <p class="footer-brand-text">Private health concierge facilitating access to Seoul's most distinguished
+                    medical institutions for discerning North American clients. We coordinate. Korean physicians care.
+                </p>
+            </div>
+            <div>
+                <div class="footer-col-title">Services</div>
+                <ul class="footer-col-links">
+                    <li><a href="#">Executive Screening</a></li>
+                    <li><a href="#">Longevity Access</a></li>
+                    <li><a href="#">Aesthetic Medicine</a></li>
+                    <li><a href="#">Hormonal Wellness</a></li>
+                    <li><a href="#">Bespoke Programs</a></li>
+                </ul>
+            </div>
+            <div>
+                <div class="footer-col-title">Company</div>
+                <ul class="footer-col-links">
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Process</a></li>
+                    <li><a href="#">Packages</a></li>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <div class="footer-col-title">Contact</div>
+                <div class="footer-contact-item">
+                    <span class="footer-contact-label">Email</span>
+                    <span class="footer-contact-val"><a href="/cdn-cgi/l/email-protection" class="__cf_email__"
+                            data-cfemail="8ff6eee1eeece7e0cfeef7e6e0e2a2ffe3eee1a1ece0e2">[email&#160;protected]</a></span>
+                </div>
+                <div class="footer-contact-item">
+                    <span class="footer-contact-label">Phone</span>
+                    <span class="footer-contact-val">+1 (949) 942-5520</span>
+                </div>
+                <div class="footer-contact-item">
+                    <span class="footer-contact-label">Web</span>
+                    <span class="footer-contact-val">axiom-plan.com</span>
+                </div>
+                <div class="footer-contact-item">
+                    <span class="footer-contact-label">Base</span>
+                    <span class="footer-contact-val">Seoul, Republic of Korea</span>
+                </div>
+            </div>
+        </div>
+        <div class="footer-legal">
+            <p>AXIOM PLAN LLC is a travel coordination and concierge services company, not a licensed medical provider,
+                healthcare facility, or clinical entity. We do not provide medical advice, diagnosis, treatment, or
+                therapeutic recommendations of any kind. Nothing on this website constitutes medical advice or
+                establishes a physician-patient relationship.</p>
+            <p>All medical services facilitated through AXIOM PLAN are performed exclusively by independently licensed
+                Korean physicians and healthcare professionals operating under the jurisdiction of the Republic of
+                Korea's Ministry of Health and Welfare. AXIOM PLAN exercises no control over, and assumes no liability
+                for, any clinical decisions, treatments, or outcomes.</p>
+            <p>*Cost comparison figures are illustrative estimates based on publicly available data and do not guarantee
+                individual savings. Client testimonials reflect individual personal experiences and are not guarantees
+                of outcome. Results vary significantly between individuals. We strongly recommend consulting your US
+                primary care physician before pursuing any medical program abroad.</p>
+        </div>
+        <div class="footer-bottom">
+            <span class="footer-copy">© 2026 AXIOM PLAN LLC. All rights reserved. Not a licensed medical
+                provider.</span>
+            <div class="footer-bottom-links">
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">Medical Disclaimer</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Activate reveal animations only when JS is running
+        document.body.classList.add('js-loaded');
+
+        // Custom cursor
+        const cur = document.getElementById('cur');
+        const ring = document.getElementById('cur-ring');
+        let mx = 0, my = 0, rx = 0, ry = 0;
+        document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; cur.style.left = mx + 'px'; cur.style.top = my + 'px'; });
+        (function animRing() {
+            rx += (mx - rx) * .12; ry += (my - ry) * .12;
+            ring.style.left = rx + 'px'; ring.style.top = ry + 'px';
+            requestAnimationFrame(animRing);
+        })();
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => { cur.style.transform = 'translate(-50%,-50%) scale(2.2)'; ring.style.borderColor = 'rgba(184,150,90,.8)'; ring.style.transform = 'translate(-50%,-50%) scale(1.5)'; });
+            el.addEventListener('mouseleave', () => { cur.style.transform = 'translate(-50%,-50%) scale(1)'; ring.style.borderColor = 'rgba(184,150,90,.45)'; ring.style.transform = 'translate(-50%,-50%) scale(1)'; });
+        });
+
+        // Nav scroll
+        const nav = document.getElementById('nav');
+        window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 60));
+
+        // Scroll reveal
+        const obs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.08 });
+
+        document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
+
+        // end script
+
+    </script>
+</body>
+
+</html>
